@@ -14,7 +14,7 @@ Requirements
 You will need these following packages :
 - [pandas](https://github.com/pandas-dev/pandas) ``pip install pandas`` v.1.1.4 or higher
 - [requests](https://github.com/psf/requests) ``pip install requests``
-- Beautiful Soup ``pip install bs4`` (you will also need a parser, in this case [html5lib](https://github.com/html5lib/html5lib-python) ``pip install html5lib``
+- Beautiful Soup ``pip install beautifulsoup4``/``pip install bs4`` (you will also need a parser, in this case [html5lib](https://github.com/html5lib/html5lib-python) ``pip install html5lib``
 - [tabulate](https://github.com/astanin/python-tabulate) ``pip install tabulate``
 
 Alternatively, you can install all these packages by running ``pip install -r requirements.txt``.
