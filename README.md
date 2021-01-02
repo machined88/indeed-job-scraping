@@ -17,7 +17,7 @@ You will need these following packages :
 - Beautiful Soup ``pip install bs4`` (you will also need a parser, in this case [html5lib](https://github.com/html5lib/html5lib-python) ``pip install html5lib``
 - [tabulate](https://github.com/astanin/python-tabulate) ``pip install tabulate``
 
-Alternatively, you can install all these packages by running ``pip install r- requirements.txt``.
+Alternatively, you can install all these packages by running ``pip install -r requirements.txt``.
 
 Usage
 ------
