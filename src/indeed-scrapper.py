@@ -18,7 +18,7 @@ while True:
     language_list_ger = ["ger", "germany", "deutsch", "deutschland", "de"]
     language_all = language_list_usa + language_list_fr + language_list_gb + language_list_ger + language_list_spa
 
-    language = input("Enter your location -> (France), (USA), (United Kingdom/UK), (Spania/Espana), (Germany/Deutschland): ").lower()
+    language = input("Enter your location -> (France), (USA), (United Kingdom/UK), (Spain/Espana), (Germany/Deutschland): ").lower()
     while language not in language_all:
         print("nop! retry")
         language = input("Enter your location -> (France), (USA), (UK), (Spain/España): ").lower()
