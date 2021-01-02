@@ -1,5 +1,5 @@
 # Indeed Job Scrapping
-Scrap jobs on Indeed with this Python script.
+Scrap jobs on [Indeed](https://www.indeed.com/) with this Python script.
 
 Features
 --------
