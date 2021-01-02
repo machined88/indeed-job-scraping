@@ -11,6 +11,7 @@ You can currently use the program to search jobs in these countries : France, Un
 
 Requirements
 ------------
+[Python 3.7 or higher](https://github.com/python/cpython) or higher.<br />
 You will need these following packages :
 - [pandas](https://github.com/pandas-dev/pandas) ``pip install pandas`` v.1.1.4 or higher
 - [requests](https://github.com/psf/requests) ``pip install requests``
