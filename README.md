@@ -22,6 +22,6 @@ Alternatively, you can install all these packages by running ``pip install -r re
 
 Usage
 ------
-1. Download the code, then open your terminal and set the directory to the ``indeed-scrapper.py`` directory folder, in this case /src/ (or simply MAJ + right click then "Open PowerShell window here").
-2. Run the file with the following commande ``python indeed-scrapper.py``.
+1. Download the code, then open your terminal and set the directory to the ``indeed-scrapper.py`` directory folder, in this case /src/ (or simply MAJ + right click then "Open PowerShell window here" on Windows).
+2. Run the file with the following command ``python indeed-scrapper.py``.
 3. Enjoy !
