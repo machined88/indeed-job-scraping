@@ -4,11 +4,17 @@ import requests
 import os
 from bs4 import BeautifulSoup
 from tabulate import tabulate
-from time import sleep
+from platform import system
 
-print("> > > INDEED JOB SCRAPPER (FR) < < <\n")
-userprofile = os.environ["USERPROFILE"]
+print("> > > INDEED JOB SCRAPER < < <\n")
+
+if system() == "Windows":       # Check running system
+    userprofile = os.environ["USERPROFILE"]
+elif system() == "Linux":
+    userprofile = os.environ["HOME"]
+
 path = os.path.join(userprofile, "Documents", "job_research_data.csv")      # Set location to save data
+pd.set_option("display.max_rows", None, "display.max_columns", None,'display.width', 500)
 
 while True:
     language_list_fr = ["francais", "français", "french", "france", "fr", "fra"]
@@ -18,30 +24,30 @@ while True:
     language_list_ger = ["ger", "germany", "deutsch", "deutschland", "de"]
     language_all = language_list_usa + language_list_fr + language_list_gb + language_list_ger + language_list_spa
 
-    language = input("Enter your location -> (France), (USA), (United Kingdom/UK), (Spain/Espana), (Germany/Deutschland): ").lower()
+    language = input("Enter your location -> (France), (USA), (United Kingdom/UK), (Spain/España), (Germany/Deutschland): ").lower()
     while language not in language_all:
         print("nop! retry")
         language = input("Enter your location -> (France), (USA), (UK), (Spain/España): ").lower()
     
     def get_url(position, location):
         if language in language_list_fr:
-            template = "https://fr.indeed.com/emplois?q={}&l={}"
+            template = "https://fr.indeed.com/emplois?q={}&l={}&sort=date"
             url = template.format(position, location)
             return url
         elif language in language_list_usa:
-            template = "https://www.indeed.com/jobs?q={}&l={}"
+            template = "https://www.indeed.com/jobs?q={}&l={}&sort=date"
             url = template.format(position, location)
             return url
         elif language in language_list_gb:
-            template = "https://www.indeed.co.uk/jobs?q={}&l={}"
+            template = "https://www.indeed.co.uk/jobs?q={}&l={}&sort=date"
             url = template.format(position, location)
             return url
         elif language in language_list_spa:
-            template = "https://es.indeed.com/jobs?q={}&l={}"
+            template = "https://es.indeed.com/jobs?q={}&l={}&sort=date"
             url = template.format(position, location)
             return url
         elif language in language_list_ger:
-            template = "https://de.indeed.com/jobs?q={}&l={}"
+            template = "https://de.indeed.com/jobs?q={}&l={}&sort=date"
             url = template.format(position, location)
             return url
 
@@ -58,7 +64,7 @@ while True:
                     job_salary = job_salary.replace("\xa0", "")
                     job_salaries.append(job_salary)
                 except:
-                    job_salaries.append(None)
+                    job_salaries.append("Not mentionned")
 
                 try:            #Job title
                     job_title = cards[index].find("h2", "title").text.strip()
@@ -71,6 +77,9 @@ while True:
 
                 try:            #Company
                     job_company = cards[index].find("span", "company").text.strip()
+                    if cards[index].find("span", "ratingsContent"):
+                        rating = cards[index].find("span", "ratingsContent").text.strip()
+                        job_company = job_company + f"\nRating : {rating}/5"
                     job_companies.append(job_company)
                 except:
                     job_companies.append(None)
@@ -87,6 +96,12 @@ while True:
                 except:
                     date_posted.append(None)
 
+                try:        #Job summary
+                    job_summary = cards[index].find("div", "summary").text.strip()
+                    job_summaries.append(job_summary)
+                except:
+                    job_summaries.append("None")
+
                 index += 1
 
     job_titles = []     # Lists to store extracted data
@@ -94,6 +109,7 @@ while True:
     job_locations = []
     date_posted = []
     job_salaries = []
+    job_summaries = []
 
     user_position = input("Enter job position: ")
     user_location = input("Enter job location: ")
@@ -123,29 +139,40 @@ while True:
     main(response50)
 
     if len(job_titles) > 0:
+        data_1 = {                        # datawithdescription
+            'TITLE': job_titles, 
+            'COMPANY': job_companies, 
+            'LOCATION': job_locations,
+            'DATE POSTED': date_posted,
+            'SALARY': job_salaries,
+            'DESCRIPTION': job_summaries,
+            }
+
+    if len(job_titles) > 0:
         data = {                        #Format data for pd.DataFrame
-            'Title': job_titles, 
-            'Company': job_companies, 
-            'Location': job_locations,
-            'Posted at': date_posted,
-            'Salary': job_salaries
+            'TITLE': job_titles, 
+            'COMPANY': job_companies, 
+            'LOCATION': job_locations,
+            'DATE POSTED': date_posted,
+            'SALARY': job_salaries,
             }
 
         scrapper_dataframe = pd.DataFrame(data)    # Print data
-        # print(tabulate(scrapper_dataframe, headers="keys", tablefmt="grid", showindex=False))
-        pd.set_option("display.max_rows", 50, "display.max_columns", 50, 'display.expand_frame_repr', False) 
-        print(tabulate(scrapper_dataframe, headers="keys", tablefmt="fancy_grid"))
+        scrapper_dataframe1 = pd.DataFrame(data_1)
+        scrapper_dataframe.drop_duplicates()
+        scrapper_dataframe1.drop_duplicates()
+        print(tabulate(scrapper_dataframe.drop_duplicates(), headers="keys", tablefmt="fancy_grid", showindex=False))
 
-        ask_save_file = input("\nDo you want to save this data into a .csv file on /Users/<user>/Documents ? (yes/no): ").lower()     # Save data
+        ask_save_file = input("\nDo you want to save this data into a .csv file on /Documents ? Job summaries are included. (yes/no): ").lower()     # Save data
         if ask_save_file == "yes" or ask_save_file == "y":
             if os.path.isfile(path) == True:
                 ask_replace = input("This file already exists, do you want to replace it ? (yes/no): ").lower()
                 if ask_replace == "yes" or ask_replace == "y":
-                    scrapper_dataframe.to_csv(path, index=False, encoding='utf-8')
-                    print("\n--- .csv file saved on /Users/<user>/Documents ---")
+                    scrapper_dataframe1.to_csv(path, index=False, encoding='utf-8')
+                    print("\n--- .csv file saved on /Documents ---")
             else:
-                scrapper_dataframe.to_csv(path, index=False, encoding='utf-8')
-                print("\n--- .csv file saved on /Users/<user>/Documents ---")
+                scrapper_dataframe1.to_csv(path, index=False, encoding='utf-8')
+                print("\n--- .csv file saved on /Documents ---")
     else:
         print("No result found.\n")
 
@@ -153,5 +180,6 @@ while True:
     if new_research == "yes" or new_research == "y":
         continue
     else:
-        input('Press ENTER to exit')
         break
+
+input('Press ENTER to exit')
