@@ -1,4 +1,4 @@
-# Indeed Job Scrapping
+# Indeed Job Scraping
 Scrap jobs on [Indeed](https://www.indeed.com/) with this Python script.
 
 Features
